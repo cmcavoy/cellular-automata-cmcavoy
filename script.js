@@ -4,22 +4,35 @@
 // prints "hi" in the browser's dev tools console
 console.log("hi");
 
-var cells = [1,0,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,1,0,0];
+var cells = [0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,1,0,0];
 let w = 10;
+let ruleset = [1,1,0,1,1,1,1,0].reverse();
 
 function draw_row(row_num, cells) {
     for (var i = 0; i < cells.length; i++) {
-        console.log(i);
         if (cells[i] == 0) { fill(255); }
         else { fill(0); }
         stroke(0);
         rect(i*w,row_num*w,w,w);
-        console.log(i*50);
     }
 }
 
-function add_row() {
-    for 
+function rules(left, middle, right) {
+    var index = left + "" + middle + "" + right;
+    return ruleset[index];
+}
+
+function add_row(cells) {
+    var newrow = [0]; // blank first cell
+    for (var i=1; i < cells.length-1; i++) {
+        var left = cells[i-1];
+        var middle = cells[i];
+        var right = cells[i+1];
+        var newstate = rules(left, middle, right);
+        newrow[i] = newstate;
+    }
+    newrow[newrow.length] = 0; // blank last cell
+    return newrow;
 }
 
 function setup() {
@@ -28,4 +41,5 @@ function setup() {
 
 function draw() {
     draw_row(0, cells);
+    draw_row(1, add_row(cells))
 }
