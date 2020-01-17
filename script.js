@@ -5,8 +5,10 @@
 console.log("hi");
 
 var cells = [0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,1,0,0];
-let w = 10;
-let ruleset = [1,1,0,1,1,1,1,0].reverse();
+let w = 5;
+let ruleset = [0,1,0,1,1,0,1,0].reverse();
+let c_width = 1024;
+let c_height = 1024;
 
 function draw_row(row_num, cells) {
     for (var i = 0; i < cells.length; i++) {
@@ -37,13 +39,19 @@ function add_row(cells) {
 }
 
 function setup() {
-    createCanvas(640, 480);
+  createCanvas(c_width, c_height);
+  var gap = Math.floor(((c_width - (cells.length * w)) / w)/2);
+  if (gap > 0) {
+    for (var i=0; i < gap; i++) {
+      cells.push
+    }
+  }
 }
 
 function draw() {
     draw_row(0, cells);
     var new_cells = cells;
-    for (var i = 1; i<25; i++) {
+    for (var i = 1; i<500; i++) {
         new_cells = add_row(new_cells);
         draw_row(i, new_cells);
     }
