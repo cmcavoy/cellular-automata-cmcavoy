@@ -19,6 +19,7 @@ function draw_row(row_num, cells) {
 
 function rules(left, middle, right) {
     var index = left + "" + middle + "" + right;
+    index = parseInt(index, 2);
     return ruleset[index];
 }
 
@@ -41,5 +42,9 @@ function setup() {
 
 function draw() {
     draw_row(0, cells);
-    draw_row(1, add_row(cells))
+    var new_cells = cells;
+    for (var i = 1; i<25; i++) {
+        new_cells = add_row(new_cells);
+        draw_row(i, new_cells);
+    }
 }
