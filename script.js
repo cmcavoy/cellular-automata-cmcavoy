@@ -38,7 +38,8 @@ class CA {
   }
 
   randomRuleSet() {
-    return this.toBinary(Math.floor(Math.random()));
+    this.ruleNum = Math.floor(Math.random() * (255));
+    return this.toBinary(this.ruleNum);
   }
 
   rules(left, middle, right) {
@@ -78,6 +79,10 @@ class CA {
   get firstGeneration() {
     return this.generation(0);
   }
+
+  get rule() {
+    return this.ruleNum;
+  }
 }
 
 function draw_row(row_num, cells) {
@@ -106,4 +111,6 @@ function draw() {
       new_cells = ca.nextGeneration;
       draw_row(i, new_cells);
   }
+  var r = document.getElementById("rule");
+  r.innerText = ca.rule;
 }
