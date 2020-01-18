@@ -5,10 +5,16 @@
 console.log("hi");
 
 class CA {
-  constructor(blockWidth) {
+  constructor(blockWidth, id) {
+    id = parseInt(id);
     this.blockWidth = blockWidth;
     this.generations = Array();
-    this.ruleset = this.randomRuleSet();
+    if (id && id <=255 && id >= 0) {
+      this.ruleNum = id;
+      this.ruleset = this.toBinary(id);
+    } else {
+      this.ruleset = this.randomRuleSet();
+    }
     console.log(this.ruleset);
     this.reset();
   }
@@ -95,10 +101,15 @@ function draw_row(row_num, cells) {
     }
 }
 
+
+
 let w = 10; // block size in pixels
 let canvasWidth = window.innerWidth - 40;
 let blockWidth = Math.floor(canvasWidth/w);
-var ca = new CA(blockWidth);
+
+var url = new URL(window.location.href);
+var id = url.searchParams.get("id");
+var ca = new CA(blockWidth, id=id);
 
 function setup() {
   createCanvas(windowWidth - 40, windowHeight);
