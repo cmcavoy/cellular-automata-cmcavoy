@@ -7,29 +7,58 @@ console.log("hi");
 let w = 10;
 
 class CA {
-  function constructor(blockWidth) {
-    for (var i=0; i<cells.length; i++) {
-      cells[i] = 0;
+  constructor(blockWidth) {
+    this.blockWidth = blockWidth;
+    this.generations = Array();
+    this.cells = Array(blockWidth);
+    this.ruleset = this.randomRuleset();
+    this.reset();
+  }
+
+  reset() {
+    this.generations = Array();
+    for (var i=0; i<blockWidth; i++) {
+      this.cells[i] = 0;
     }
   }
 
-  
-}
-
-function to_binary(n) {
-  var b = n.toString(2).split('');
-  for (var i=b.length; i<8;i++) {
-    b.unshift(0)
+  toBinary(n) {
+    var b = n.toString(2).split('');
+    for (var i=b.length; i<8;i++) {
+      b.unshift(0)
+    }
+    for (var i=0; i<b.length; i++) {
+      b[i] = parseInt(b[i]);
+    }
+    b.reverse();
+    return b;
   }
-  for (var i=0; i<b.length; i++) {
-    b[i] = parseInt(b[i]);
-  }
-  b.reverse();
-  return b;
-}
 
-var ruleset = to_binary(50);
-var cells;
+  randomRuleSet() {
+    return this.toBinary(Math.floor(random(255)));
+  }
+
+  addGeneration() {
+    var newrow = Array(this.blockWidth);
+    var previous;
+    if (this.generations == 1) {
+      previous = this.generations[0];
+    } else {
+      previous = this.generations[this.generations.length-1];
+    }
+    for (var i=0; i< newrow.length; i++) {
+      newrow[i] = 0; // fill new row with zeros
+    }
+    // skip the first and last cells, run the rule.
+    for (var i=1; i < cells.length-1; i++) {
+        var left = cells[i-1];
+        var middle = cells[i];
+        var right = cells[i+1];
+        var newstate = rules(left, middle, right);
+        newrow[i] = newstate;
+    }
+  }
+}
 
 function draw_row(row_num, cells) {
     // don't print first and last cells
@@ -48,18 +77,7 @@ function rules(left, middle, right) {
 }
 
 function add_row(cells) {
-    var newrow = Array(cells.length);
-    for (var i=0; i< newrow.length; i++) {
-      newrow[i] = 0; // fill new row with zeros
-    }
-    // skip the first and last cells, run the rule.
-    for (var i=1; i < cells.length-1; i++) {
-        var left = cells[i-1];
-        var middle = cells[i];
-        var right = cells[i+1];
-        var newstate = rules(left, middle, right);
-        newrow[i] = newstate;
-    }
+
     return newrow;
 }
 
