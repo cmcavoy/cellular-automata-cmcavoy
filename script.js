@@ -8,20 +8,23 @@ class CA {
   constructor(blockWidth) {
     this.blockWidth = blockWidth;
     this.generations = Array();
-    this.cells = Array(blockWidth);
-    this.ruleset = this.randomRuleset();
+    this.ruleset = this.randomRuleSet();
+    console.log(this.ruleset);
     this.reset();
   }
 
   reset() {
+    var cells = Array();
     this.generations = Array();
     for (var i=0; i<this.blockWidth; i++) {
-      this.cells[i] = 0;
+      cells[i] = 0;
     }
-    this.cells[Math.floor(this.blockWidth / 2)] = 1;
+    cells[Math.floor(this.blockWidth / 2)] = 1;
+    this.generations.push(cells);
   }
 
   toBinary(n) {
+    console.log(n);
     var b = n.toString(2).split('');
     for (var i=b.length; i<8;i++) {
       b.unshift(0)
@@ -30,11 +33,12 @@ class CA {
       b[i] = parseInt(b[i]);
     }
     b.reverse();
+    console.log(b);
     return b;
   }
 
   randomRuleSet() {
-    return this.toBinary(Math.floor(random(255)));
+    return this.toBinary(Math.floor(Math.random()));
   }
 
   rules(left, middle, right) {
@@ -52,7 +56,7 @@ class CA {
     }
 
     // skip the first and last cells, run the rule.
-    for (var i=1; i < cells.length-1; i++) {
+    for (var i=1; i < newgen.length-1; i++) {
         var left = previous[i-1];
         var middle = previous[i];
         var right = previous[i+1];
@@ -65,6 +69,14 @@ class CA {
 
   get nextGeneration() {
     return this.addGeneration();
+  }
+
+  generation(n) {
+    return this.generations[n];
+  }
+
+  get firstGeneration() {
+    return this.generation(0);
   }
 }
 
@@ -81,7 +93,7 @@ function draw_row(row_num, cells) {
 let w = 10; // block size in pixels
 let canvasWidth = window.innerWidth - 40;
 let blockWidth = Math.floor(canvasWidth/w);
-var ca = CA(blockWidth);
+var ca = new CA(blockWidth);
 
 function setup() {
   createCanvas(windowWidth - 40, windowHeight);
@@ -89,10 +101,9 @@ function setup() {
 }
 
 function draw() {
-  draw_row(0, cells);
-  var new_cells = cells;
+  draw_row(0, ca.firstGeneration);
   for (var i = 1; i<500; i++) {
-      new_cells = ca.nextGeneration();
+      new_cells = ca.nextGeneration;
       draw_row(i, new_cells);
   }
 }
