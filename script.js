@@ -4,8 +4,6 @@
 // prints "hi" in the browser's dev tools console
 console.log("hi");
 
-let w = 10;
-
 class CA {
   constructor(blockWidth) {
     this.blockWidth = blockWidth;
@@ -17,9 +15,10 @@ class CA {
 
   reset() {
     this.generations = Array();
-    for (var i=0; i<blockWidth; i++) {
+    for (var i=0; i<this.blockWidth; i++) {
       this.cells[i] = 0;
     }
+    this.cells[Math.floor(this.blockWidth / 2)] = 1;
   }
 
   toBinary(n) {
@@ -38,25 +37,34 @@ class CA {
     return this.toBinary(Math.floor(random(255)));
   }
 
+  rules(left, middle, right) {
+    var index = left + "" + middle + "" + right;
+    index = parseInt(index, 2);
+    return this.ruleset[index];
+  }
+
   addGeneration() {
-    var newrow = Array(this.blockWidth);
-    var previous;
-    if (this.generations == 1) {
-      previous = this.generations[0];
-    } else {
-      previous = this.generations[this.generations.length-1];
+    var newgen = Array(this.blockWidth);
+    var previous = this.generations[this.generations.length-1];
+
+    for (var i=0; i< newgen.length; i++) {
+      newgen[i] = 0; // fill new row with zeros
     }
-    for (var i=0; i< newrow.length; i++) {
-      newrow[i] = 0; // fill new row with zeros
-    }
+
     // skip the first and last cells, run the rule.
     for (var i=1; i < cells.length-1; i++) {
-        var left = cells[i-1];
-        var middle = cells[i];
-        var right = cells[i+1];
-        var newstate = rules(left, middle, right);
-        newrow[i] = newstate;
+        var left = previous[i-1];
+        var middle = previous[i];
+        var right = previous[i+1];
+        var newstate = this.rules(left, middle, right);
+        newgen[i] = newstate;
     }
+    this.generations.push(newgen);
+    return newgen;
+  }
+
+  get nextGeneration() {
+    return this.addGeneration();
   }
 }
 
@@ -70,32 +78,21 @@ function draw_row(row_num, cells) {
     }
 }
 
-function rules(left, middle, right) {
-    var index = left + "" + middle + "" + right;
-    index = parseInt(index, 2);
-    return ruleset[index];
-}
-
-function add_row(cells) {
-
-    return newrow;
-}
+let w = 10; // block size in pixels
+let canvasWidth = window.innerWidth - 40;
+let blockWidth = Math.floor(canvasWidth/w);
+var ca = CA(blockWidth);
 
 function setup() {
   createCanvas(windowWidth - 40, windowHeight);
-  var blockWidth = Math.floor(windowWidth/w);
-  ca = CA(blockwidth);
-  cells = Array(blockWidth);
-
-  cells[Math.floor(blockWidth / 2)] = 1;
   noLoop();
 }
 
 function draw() {
-    draw_row(0, cells);
-    var new_cells = cells;
-    for (var i = 1; i<500; i++) {
-        new_cells = add_row(new_cells);
-        draw_row(i, new_cells);
-    }
+  draw_row(0, cells);
+  var new_cells = cells;
+  for (var i = 1; i<500; i++) {
+      new_cells = ca.nextGeneration();
+      draw_row(i, new_cells);
+  }
 }
