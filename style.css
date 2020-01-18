@@ -1,7 +1,11 @@
 /* CSS files add styling rules to your content */
+@font-face {
+  font-family: "kong";
+  src: url("https://cdn.glitch.com/1e95e9f5-2e27-4515-83e4-018b797730ba%2Fkongtext.ttf?v=1579315485460") format("woff");
+}
 
 body {
-  font-family: helvetica, arial, sans-serif;
+  font-family: "kong", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 20px;
 }
 
